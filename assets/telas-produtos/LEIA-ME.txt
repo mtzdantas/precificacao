@@ -1,0 +1,16 @@
+PASTA DE ENVIO DAS TELAS DOS PRODUTOS
+
+Coloque todas as imagens nesta pasta. Podem ser arquivos PNG, JPG, JPEG ou WEBP.
+Não é necessário criar subpastas: depois do envio, as imagens serão organizadas e relacionadas
+ao carrossel de cada solução.
+
+Se quiser facilitar a identificação, use o nome do produto no arquivo. Exemplos:
+
+pedenoo-01.png
+pedenoo-delivery-01.png
+meuchef-garcom-01.png
+meuchef-windows-01.png
+kds-01.png
+smartpos-ficha-01.png
+
+Evite colocar senhas, dados reais de clientes, documentos ou informações sensíveis nas capturas.

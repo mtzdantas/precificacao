@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mapa interativo de soluções para apresentação comercial.">
+  <title>Mapa interativo de soluções</title>
+    <link rel="stylesheet" href="styles.css?v=61">
+</head>
+<body>
+  <div class="app-shell">
+    <section class="license-bar" aria-label="Ações da apresentação">
+      <div class="license-actions" aria-label="Ações da apresentação">
+        <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Apresentar em tela cheia" title="Apresentar em tela cheia">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+        </button>
+        <button class="price-settings-button" id="priceSettingsButton" type="button" aria-label="Editar apresentação" aria-controls="priceSettingsModal" aria-expanded="false" title="Editar apresentação">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.38.36.72.66.99.3.27.68.42 1.08.42H21v4h-.09c-.4 0-.78.15-1.08.42-.3.27-.52.61-.66.99z"/></svg>
+          <span>Editar</span>
+        </button>
+        <button class="text-button" id="clearButton" type="button">Limpar</button>
+        <button class="primary-button" id="showAllButton" type="button">Mostrar todos</button>
+      </div>
+    </section>
+
+    <main class="configurator">
+      <aside class="product-panel" id="productPanel" aria-label="Licenças e soluções">
+        <button class="side-menu-toggle" id="sideMenuToggle" type="button" aria-controls="productPanel" aria-expanded="true" aria-label="Recolher menu de soluções" title="Recolher menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+        <div class="catalog-tabs" role="tablist" aria-label="Tipo de licença">
+          <button class="is-active" id="foodCatalogButton" data-catalog="food" type="button" role="tab" aria-selected="true">Licenças Food</button>
+          <button id="retailCatalogButton" data-catalog="retail" type="button" role="tab" aria-selected="false">Licenças Varejo</button>
+          <button id="generalCatalogButton" data-catalog="general" type="button" role="tab" aria-selected="false">Geral</button>
+        </div>
+        <div class="core-license-list" aria-label="Licenças principais">
+          <div class="license-base-summary">
+            <span class="license-base-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16v12H4zM8 21h8M12 17v4"/></svg>
+            </span>
+            <div><small>Licença base</small><strong>Retaguarda</strong></div>
+            <b id="basePriceDisplay">R$ 34,00</b>
+          </div>
+
+          <div class="license-user-summary">
+            <div class="license-user-heading">
+              <div>
+                <span class="license-user-label">
+                  <small>Licenças de usuário</small>
+                  <button class="license-help-button" id="accessExplanationButton" type="button" aria-label="Por que preciso de usuários?" aria-controls="accessExplanationModal" aria-expanded="false">?</button>
+                </span>
+                <strong id="userLicenseTitle">1 usuário incluso</strong>
+                <small class="license-user-rule" id="userLicenseRule">1 incluso na retaguarda</small>
+              </div>
+              <div class="user-license-control" role="group" aria-label="Quantidade de usuários da retaguarda">
+                <button id="decreaseUsersButton" type="button" aria-label="Diminuir quantidade de usuários da retaguarda">−</button>
+                <strong id="userQuantity" aria-live="polite">1</strong>
+                <button id="increaseUsersButton" type="button" aria-label="Aumentar quantidade de usuários da retaguarda">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-list" id="productList"></div>
+
+        <div class="product-footer" aria-live="polite">
+          <div>
+            <span>Investimento mensal estimado</span>
+            <small id="totalPriceDetails">Retaguarda · 1 usuário incluso</small>
+          </div>
+          <strong id="totalPrice">R$ 34,00</strong>
+        </div>
+      </aside>
+
+      <section class="map-panel" aria-label="Mapa interativo do cenário">
+        <div class="map-status">
+          <span class="status-dot"></span>
+          <div>
+            <small id="scenarioStatusLabel">Restaurante conectado</small>
+            <strong><span id="activeCount">0</span> de <span id="totalCount">17</span> soluções instaladas</strong>
+          </div>
+        </div>
+
+        <div class="scenario-carousel" aria-label="Selecionar cenário">
+          <button id="previousScenarioButton" type="button" aria-label="Cenário anterior">‹</button>
+          <div>
+            <small id="scenarioCategory">Food · cenário 1 de 5</small>
+            <strong id="scenarioName">Restaurante</strong>
+          </div>
+          <button id="nextScenarioButton" type="button" aria-label="Próximo cenário">›</button>
+          <button class="scenario-custom-button" id="customScenarioButton" type="button" aria-label="Criar ou editar um cenário personalizado" title="Criar ou editar cenário">Editar cenário</button>
+        </div>
+
+        <div class="restaurant-map" id="restaurantMap">
+          <img id="scenarioImage" src="assets/restaurante-base-interativo-v2.png" alt="Planta superior completa de restaurante com salão, buffet, cozinha, bar, balcão e entrada.">
+          <div class="layout-layer" id="layoutLayer" tabindex="-1" aria-label="Área de edição do cenário personalizado"></div>
+          <div class="equipment-layer" id="equipmentLayer" aria-live="polite"></div>
+          <div class="layout-builder" id="layoutBuilder" hidden>
+            <div class="layout-builder-heading">
+              <span>Monte seu espaço</span>
+              <small>Arraste uma peça para o piso</small>
+            </div>
+            <div class="layout-palette" id="layoutPalette" aria-label="Peças para montar o cenário"></div>
+            <div class="layout-builder-actions">
+              <button class="layout-mode-button" id="layoutModeButton" type="button">Visualizar</button>
+              <div class="layout-size-control" role="group" aria-label="Tamanho dos elementos selecionados">
+                <button id="decreaseLayoutSizeButton" type="button" aria-label="Diminuir elementos selecionados" title="Diminuir">−</button>
+                <span id="selectedLayoutCount">Tamanho</span>
+                <button id="increaseLayoutSizeButton" type="button" aria-label="Aumentar elementos selecionados" title="Aumentar">+</button>
+              </div>
+              <button class="layout-shortcuts-button" id="layoutShortcutsButton" type="button">Atalhos</button>
+              <button class="layout-save-button" id="saveLayoutButton" type="button">Salvar modelo</button>
+              <button class="layout-delete-button" id="deleteLayoutButton" type="button" hidden>Excluir modelo</button>
+              <button class="layout-clear-button" id="clearLayoutButton" type="button">Limpar</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <div class="price-modal" id="priceSettingsModal" aria-hidden="true" inert>
+    <div class="price-modal-backdrop" data-price-close></div>
+    <section class="price-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="priceSettingsTitle">
+      <header class="price-modal-heading">
+        <div>
+          <span>Apresentação white label</span>
+          <h2 id="priceSettingsTitle">Editar apresentação</h2>
+          <p>Personalize os nomes, valores e prints apresentados ao cliente.</p>
+        </div>
+        <button class="access-modal-close" id="priceModalClose" type="button" aria-label="Fechar edição da apresentação">×</button>
+      </header>
+
+      <button class="price-visibility-toggle" id="priceVisibilityButton" type="button" aria-pressed="true">
+        <span class="price-visibility-switch" aria-hidden="true"><i></i></span>
+        <span>Exibir preços</span>
+        <strong id="priceVisibilityLabel">Ativo</strong>
+      </button>
+
+      <div class="price-modal-body">
+        <section class="price-section custom-solution-section" aria-labelledby="customSolutionTitle">
+          <div class="custom-solution-heading">
+            <div>
+              <h3 id="customSolutionTitle">Soluções personalizadas</h3>
+              <p>Inclua equipamentos ou serviços próprios nesta apresentação.</p>
+            </div>
+            <button id="toggleCustomSolutionFormButton" type="button" aria-expanded="false" aria-controls="customSolutionForm">+ Nova solução</button>
+          </div>
+          <form class="custom-solution-form" id="customSolutionForm" hidden>
+            <div class="custom-solution-fields">
+              <label><span>Nome da solução</span><input id="customSolutionName" type="text" maxlength="80" required></label>
+              <label><span>Lista de licenças</span><select id="customSolutionCategory"><option value="food">Licenças Food</option><option value="retail">Licenças Varejo</option><option value="general">Geral</option></select></label>
+              <label><span>Valor mensal</span><span class="price-input-group"><span>R$</span><input id="customSolutionPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Sem valor"></span></label>
+              <label><span>Sistema ou tipo</span><input id="customSolutionPlatform" type="text" maxlength="60" placeholder="Ex.: Serviço, Windows ou Browser"></label>
+              <label class="custom-solution-wide"><span>Descrição curta</span><input id="customSolutionDescription" type="text" maxlength="120" placeholder="Principal benefício ou local de uso"></label>
+            </div>
+            <div class="custom-solution-options">
+              <label><input id="customSolutionShowOnMap" type="checkbox" checked><span>Mostrar esta solução no mapa</span></label>
+              <label><input id="customSolutionSingleCharge" type="checkbox" checked><span>Cobrar somente uma vez</span></label>
+            </div>
+            <fieldset class="custom-icon-picker" id="customIconPicker">
+              <legend>Ícone no mapa</legend>
+              <div class="custom-icon-list" id="customIconList" role="listbox" aria-label="Escolher um ícone existente"></div>
+              <label class="custom-icon-upload">
+                <span>Enviar imagem do computador</span>
+                <input id="customIconUpload" type="file" accept="image/png,image/jpeg,image/webp">
+              </label>
+              <div class="custom-icon-preview" id="customIconPreview" hidden><img alt="Prévia do ícone enviado"><button id="clearCustomIconButton" type="button">Usar ícones da lista</button></div>
+              <small id="customIconStatus">A imagem será ajustada automaticamente.</small>
+            </fieldset>
+            <div class="custom-solution-actions">
+              <button class="price-apply-button" type="submit">Adicionar solução</button>
+            </div>
+          </form>
+        </section>
+        <section class="price-section" aria-labelledby="mainPricesTitle">
+          <h3 id="mainPricesTitle">Licenças principais</h3>
+          <div class="price-config-grid" id="mainPriceList"></div>
+        </section>
+        <section class="price-section" aria-labelledby="foodPricesTitle">
+          <h3 id="foodPricesTitle">Licenças Food</h3>
+          <div class="price-config-grid" id="foodPriceList"></div>
+        </section>
+        <section class="price-section" aria-labelledby="retailPricesTitle">
+          <h3 id="retailPricesTitle">Licenças Varejo</h3>
+          <div class="price-config-grid" id="retailPriceList"></div>
+        </section>
+        <section class="price-section" aria-labelledby="generalPricesTitle">
+          <h3 id="generalPricesTitle">Geral</h3>
+          <div class="price-config-grid" id="generalPriceList"></div>
+        </section>
+        <section class="price-section" aria-labelledby="integrationPricesTitle">
+          <h3 id="integrationPricesTitle">Integrações</h3>
+          <div id="integrationPriceSummary"></div>
+        </section>
+      </div>
+
+      <footer class="price-modal-footer">
+        <button class="price-reset-button" id="resetPricesButton" type="button">Restaurar padrão</button>
+        <button class="price-apply-button" id="applyPricesButton" type="button">Aplicar alterações</button>
+        <button class="price-close-button" type="button" data-price-close>Fechar</button>
+      </footer>
+    </section>
+  </div>
+
+  <div class="price-modal integration-settings-modal" id="integrationSettingsModal" aria-hidden="true" inert>
+    <div class="price-modal-backdrop" data-integration-settings-close></div>
+    <section class="price-modal-dialog integration-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="integrationSettingsTitle">
+      <header class="price-modal-heading">
+        <div>
+          <span>Catálogo geral</span>
+          <h2 id="integrationSettingsTitle">Editar integrações</h2>
+          <p>Altere os valores cadastrados ou inclua uma nova integração.</p>
+        </div>
+        <button class="access-modal-close" id="integrationSettingsClose" type="button" aria-label="Fechar edição das integrações">×</button>
+      </header>
+
+      <form class="integration-settings-add" id="integrationSettingsForm">
+        <label><span>Nome da integração</span><input id="newIntegrationName" type="text" maxlength="80" required></label>
+        <label><span>Grupo</span><select id="newIntegrationGroup"><option>Delivery</option><option>Marketplaces</option><option>Benefícios</option><option>E-Commerce</option><option>Tributação</option><option>Boleto/Pix</option><option>Automação</option><option>Farmácia</option><option>Contábil</option><option>Outras</option></select></label>
+        <label><span>Valor mensal</span><span class="price-input-group"><span>R$</span><input id="newIntegrationPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Sem valor"></span></label>
+        <button class="price-apply-button" type="submit">Adicionar integração</button>
+      </form>
+
+      <div class="integration-settings-list" id="integrationSettingsList"></div>
+
+      <footer class="price-modal-footer">
+        <button class="price-apply-button" id="applyIntegrationSettingsButton" type="button">Aplicar alterações</button>
+        <button class="price-close-button" type="button" data-integration-settings-close>Fechar</button>
+      </footer>
+    </section>
+  </div>
+
+  <div class="access-modal integrations-modal" id="integrationsModal" aria-hidden="true" inert>
+    <div class="access-modal-backdrop" data-integrations-close></div>
+    <section class="access-modal-dialog integrations-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="integrationsModalTitle">
+      <header class="access-modal-heading">
+        <div>
+          <span>Soluções gerais</span>
+          <h2 id="integrationsModalTitle">Integrações</h2>
+          <p>Selecione as integrações que farão parte da operação.</p>
+        </div>
+        <button class="access-modal-close" id="integrationsModalClose" type="button" aria-label="Fechar integrações">×</button>
+      </header>
+      <div class="integrations-modal-body">
+        <div class="integration-list" id="integrationList"></div>
+        <div class="integration-empty-state" id="integrationEmptyState">
+          <strong>As integrações serão exibidas aqui.</strong>
+          <span>Use o botão Editar e cadastre uma solução na lista “Integrações”.</span>
+        </div>
+      </div>
+      <footer class="integrations-modal-footer">
+        <button class="price-close-button" type="button" data-integrations-close>Fechar</button>
+      </footer>
+    </section>
+  </div>
+
+  <div class="access-modal shortcut-modal" id="layoutShortcutsModal" aria-hidden="true" inert>
+    <div class="access-modal-backdrop" data-shortcuts-close></div>
+    <section class="access-modal-dialog shortcut-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="layoutShortcutsTitle">
+      <header class="access-modal-heading">
+        <div><span>Editor de cenário</span><h2 id="layoutShortcutsTitle">Atalhos</h2><p>Comandos para montar o cenário com mais rapidez.</p></div>
+        <button class="access-modal-close" id="layoutShortcutsClose" type="button" aria-label="Fechar atalhos">×</button>
+      </header>
+      <div class="shortcut-list">
+        <div><kbd>Shift</kbd><span>Segure e clique para selecionar vários elementos.</span></div>
+        <div><kbd>Arrastar no vazio</kbd><span>Desenhe uma caixa para selecionar um ou vários elementos.</span></div>
+        <div><kbd>Ctrl + A</kbd><span>Selecionar todos os elementos.</span></div>
+        <div><kbd>← ↑ → ↓</kbd><span>Mover os elementos selecionados com precisão.</span></div>
+        <div><kbd>Shift + seta</kbd><span>Mover os elementos em passos maiores.</span></div>
+        <div><kbd>Ctrl + D</kbd><span>Duplicar os elementos selecionados.</span></div>
+        <div><kbd>Delete</kbd><span>Excluir os elementos selecionados.</span></div>
+        <div><kbd>Esc</kbd><span>Limpar a seleção atual.</span></div>
+      </div>
+      <footer class="shortcut-modal-footer"><button class="price-close-button" type="button" data-shortcuts-close>Fechar</button></footer>
+    </section>
+  </div>
+
+  <div class="access-modal" id="accessExplanationModal" aria-hidden="true" inert>
+    <div class="access-modal-backdrop" data-access-close></div>
+    <section class="access-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle">
+      <header class="access-modal-heading">
+        <div>
+          <span>Exemplo prático de acesso</span>
+          <h2 id="accessModalTitle">Por que preciso de usuários?</h2>
+          <p>Veja o que acontece com o usuário <strong>exemplo@meuerp.com</strong>.</p>
+        </div>
+        <button class="access-modal-close" id="accessModalClose" type="button" aria-label="Fechar explicação">×</button>
+      </header>
+
+      <div class="access-example-stack">
+        <article class="access-example-card access-example-allowed">
+          <header><b>1</b><div><span>Acesso permitido</span><h3>O mesmo usuário pode acessar a retaguarda e vários PDVs</h3></div></header>
+          <div class="access-example-flow access-example-flow-multi">
+            <div class="access-user-node"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM7 8l5 4 5-4"/></svg><strong>exemplo@meuerp.com</strong></div>
+            <span class="access-example-arrow" aria-hidden="true">→</span>
+            <div class="access-destination-grid">
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H4zM8 21h8M12 17v4"/></svg><strong>Retaguarda</strong><small>1 computador</small></span>
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 7h6M9 17h6"/></svg><strong>PDV 1</strong><small>Acesso liberado</small></span>
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 7h6M9 17h6"/></svg><strong>PDV 2</strong><small>Acesso liberado</small></span>
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 7h6M9 17h6"/></svg><strong>PDV 3+</strong><small>Acesso liberado</small></span>
+            </div>
+          </div>
+          <p>Nos PDVs, esse usuário pode abrir <strong>um ou vários terminais ao mesmo tempo</strong>.</p>
+        </article>
+
+        <article class="access-example-card access-example-limited">
+          <header><b>2</b><div><span>Limite da retaguarda</span><h3>Na retaguarda, o mesmo usuário entra em apenas um computador por vez</h3></div></header>
+          <div class="access-example-flow access-example-flow-limit">
+            <div class="access-user-node"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM7 8l5 4 5-4"/></svg><strong>exemplo@meuerp.com</strong></div>
+            <span class="access-example-arrow" aria-hidden="true">→</span>
+            <div class="access-retaguarda-devices">
+              <span class="is-allowed"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H4zM8 21h8M12 17v4M17 8l2 2 3-4"/></svg><strong>Computador A</strong><small>Retaguarda liberada</small></span>
+              <span class="is-blocked"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v12H4zM8 21h8M12 17v4M18 7l4 4M22 7l-4 4"/></svg><strong>Computador B</strong><small>Bloqueado ao mesmo tempo</small></span>
+            </div>
+          </div>
+          <p>Para acessar a retaguarda simultaneamente no segundo computador, é necessário <strong>outro usuário de acesso</strong>.</p>
+        </article>
+
+        <article class="access-example-card access-example-employees">
+          <header><b>3</b><div><span>Funcionários no PDV</span><h3>Um PDV pode identificar vários funcionários com o mesmo usuário de acesso</h3></div></header>
+          <div class="access-example-flow access-example-flow-employees">
+            <div class="access-user-node access-pdv-user-node"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 7h6M9 17h6"/></svg><strong>PDV 1</strong><small>exemplo@meuerp.com</small></div>
+            <span class="access-example-arrow" aria-hidden="true">→</span>
+            <div class="access-destination-grid access-employee-grid">
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><strong>Funcionário 1</strong><small>Cadastro liberado</small></span>
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><strong>Funcionário 2</strong><small>Cadastro liberado</small></span>
+              <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M18 8h4M20 6v4"/></svg><strong>Funcionário 3+</strong><small>Cadastro liberado</small></span>
+            </div>
+          </div>
+          <p><strong>Não há custo para cadastros de funcionários.</strong></p>
+        </article>
+      </div>
+
+      <div class="access-modal-answer">
+        <strong>Resumo: usuários controlam acessos; funcionários identificam as operações.</strong>
+        <span>A cobrança considera os computadores simultâneos na retaguarda, não os funcionários cadastrados.</span>
+      </div>
+    </section>
+  </div>
+
+  <aside class="solution-preview" id="solutionPreview" aria-hidden="true" inert>
+    <div class="solution-preview-heading">
+      <div>
+        <span class="solution-preview-kicker">Pontos principais</span>
+        <strong id="solutionPreviewTitle">Solução Food</strong>
+      </div>
+      <button class="solution-preview-close" id="solutionPreviewClose" type="button" aria-label="Fechar detalhes">×</button>
+    </div>
+    <ul class="solution-preview-list" id="solutionPreviewList"></ul>
+    <section class="solution-gallery" aria-labelledby="solutionGalleryTitle">
+      <div class="solution-gallery-heading">
+        <strong id="solutionGalleryTitle">Telas da solução</strong>
+        <span id="solutionGalleryCount">0 imagens</span>
+      </div>
+      <div class="solution-gallery-stage">
+        <img id="solutionGalleryImage" alt="" hidden>
+        <div class="solution-gallery-empty" id="solutionGalleryEmpty">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 11l2-2 4 4 2-2 4 4M9 8h.01"/></svg>
+          <span>Galeria em preparação</span>
+        </div>
+      </div>
+      <div class="solution-gallery-controls">
+        <button id="solutionGalleryPrevious" type="button" aria-label="Imagem anterior">‹</button>
+        <div class="solution-gallery-dots" id="solutionGalleryDots" aria-hidden="true"></div>
+        <button id="solutionGalleryNext" type="button" aria-label="Próxima imagem">›</button>
+      </div>
+    </section>
+  </aside>
+
+  <div class="announcement" id="announcement" role="status" aria-live="polite"></div>
+  <script src="configurator.js?v=80"></script>
+</body>
+</html>
